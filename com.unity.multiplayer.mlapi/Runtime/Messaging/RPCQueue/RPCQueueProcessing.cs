@@ -4,8 +4,6 @@ using UnityEngine;
 using Unity.Profiling;
 using MLAPI.Configuration;
 using MLAPI.Profiling;
-using MLAPI.Transports;
-
 
 namespace MLAPI.Messaging
 {
@@ -17,14 +15,13 @@ namespace MLAPI.Messaging
     /// </summary>
     internal class RpcQueueProcessing
     {
-
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
         static ProfilerMarker s_MLAPIRPCQueueProcess = new ProfilerMarker("MLAPIRPCQueueProcess");
         static ProfilerMarker s_MLAPIRPCQueueSend = new ProfilerMarker("MLAPIRPCQueueSend");
 #endif
 
         // Batcher object used to manage the RPC batching on the send side
-        private MessageBatcher m_batcher = new MessageBatcher();
+        private readonly MessageBatcher m_Batcher = new MessageBatcher();
         private int m_BatchThreshold = 512;
 
 
@@ -175,9 +172,9 @@ namespace MLAPI.Messaging
                             AdvanceFrameHistory = true;
                             if(rpcQueueContainer.IsUsingBatching())
                             {
-                                m_batcher.QueueItem(currentQueueItem);
+                                m_Batcher.QueueItem(currentQueueItem);
 
-                                m_batcher.SendItems(m_BatchThreshold, SendCallback);
+                                m_Batcher.SendItems(m_BatchThreshold, SendCallback);
                             }
                             else
                             {
@@ -189,7 +186,7 @@ namespace MLAPI.Messaging
                         //If the size is < m_BatchThreshold then just send the messages
                         if(AdvanceFrameHistory && rpcQueueContainer.IsUsingBatching())
                         {
-                            m_batcher.SendItems(0, SendCallback);
+                            m_Batcher.SendItems(0, SendCallback);
                         }
                     }
                 }
@@ -209,7 +206,7 @@ namespace MLAPI.Messaging
         /// </summary>
         /// <param name="clientId"> clientId to send to</param>
         /// <param name="sendStream"> the stream to send</param>
-        private static void SendCallback(ulong clientId, MLAPI.MessageBatcher.SendStream sendStream)
+        private static void SendCallback(ulong clientId, MessageBatcher.SendStream sendStream)
         {
             var length = (int)sendStream.Stream.Length;
             var bytes = sendStream.Stream.GetBuffer();

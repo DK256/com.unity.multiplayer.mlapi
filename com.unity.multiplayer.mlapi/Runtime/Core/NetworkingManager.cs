@@ -1167,7 +1167,7 @@ namespace MLAPI
                             {
                                 if(rpcQueueContainer.IsUsingBatching())
                                 {
-                                    batcher.ReceiveItems(messageStream, ReceiveCallback, RpcQueueContainer.QueueItemType.ServerRpc, clientId, receiveTime);
+                                    MessageBatcher.ReceiveItems(messageStream, ReceiveCallback, RpcQueueContainer.QueueItemType.ServerRpc, clientId, receiveTime);
                                     ProfilerStatManager.rpcBatchesRcvd.Record();
                                 }
                                 else
@@ -1189,7 +1189,7 @@ namespace MLAPI
                             {
                                 if(rpcQueueContainer.IsUsingBatching())
                                 {
-                                    batcher.ReceiveItems(messageStream, ReceiveCallback, RpcQueueContainer.QueueItemType.ClientRpc, clientId, receiveTime);
+                                    MessageBatcher.ReceiveItems(messageStream, ReceiveCallback, RpcQueueContainer.QueueItemType.ClientRpc, clientId, receiveTime);
                                     ProfilerStatManager.rpcBatchesRcvd.Record();
                                 }
                                 else
